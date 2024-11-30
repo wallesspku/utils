@@ -78,8 +78,6 @@ def none_field(v):
 
 
 def wait_for_network():
-    warnings.warn('Deprecated warning: use network status instead.')
-    # should be deprecated
     while True:
         try:
             ret = requests.get('https://www.cloudflare.com/cdn-cgi/trace/')
