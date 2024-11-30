@@ -21,7 +21,7 @@ def whoami(ns: NetworkStatus = None, debug: bool = False):
         ns = NetworkStatus()
         ns.wait_for_network()
 
-    nodes = db.all_servers(get_mix=False, get_relays=False)
+    nodes = db.all_servers(get_mix=True, get_relays=True)
 
     # uuid is priority 1
     if my_uuid is not None:
