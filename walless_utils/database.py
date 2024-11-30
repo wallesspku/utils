@@ -186,6 +186,12 @@ END
             args=[port, node_uuid], query=False,
         )
 
+    def hide_node(self, node_uuid: str, hide_flag: bool):
+        self.execute(
+            f'UPDATE {tn.node} SET hidden = ? WHERE uuid = ?',
+            args=[bool(hide_flag), node_uuid], query=False,
+        )
+
     # user traffic table
 
     def get_traffic_after(self, user_id, after) -> List[Traffic]:
