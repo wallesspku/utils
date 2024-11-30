@@ -6,7 +6,7 @@ import requests
 class NetworkStatus:
     ipv6_check_patience = 3
 
-    def __init__(self, refresh_interval: int = 5, patience: int = 100):
+    def __init__(self, refresh_interval: int = 5, patience: int = 2):
         """
         Check the status of the network to see if IPv4 or IPv6 are available.
         :param refresh_interval: In seconds. How long does it take to perform a refresh.
