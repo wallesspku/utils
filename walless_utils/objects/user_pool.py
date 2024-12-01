@@ -58,7 +58,7 @@ class UserPool:
             self.id2user.pop(user.user_id)
         if user.email in self.email2user:
             self.email2user.pop(user.email)
-        if not user.enable and self.enable_only:
+        if not user.enabled and self.enable_only:
             return
         self.id2user[user.user_id] = user
         self.email2user[user.email] = user
