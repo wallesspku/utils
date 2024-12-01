@@ -9,7 +9,7 @@ from ..global_obj.config_setup import DOMAINS, BALANCE_CONFIG
 @dataclass()
 class User:
     user_id: int
-    enable: bool
+    enabled: bool
     username: str
     password: str
     email: str
@@ -24,7 +24,7 @@ class User:
     remarks: Optional[str] = None
 
     def __post_init__(self):
-        self.enable = (self.enable != 0)
+        self.enabled = (self.enabled != 0)
         if isinstance(self.register_day, int):
             self.register_day = datetime.fromtimestamp(self.register_day, tz=tz).date()
         if isinstance(self.last_active_day, int):
@@ -33,7 +33,7 @@ class User:
 
     def __repr__(self) -> str:
         ret = f'<User {self.user_id}: {self.email}'
-        if not self.enable:
+        if not self.enabled:
             ret += ' DISABLED'
         return ret + '>'
 
