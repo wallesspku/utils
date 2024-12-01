@@ -135,6 +135,12 @@ END
             args=[    int(time.time()), email_header, sender, receiver, status],
             query=False,
         )
+    
+    def enable_user(self, user_id: int, enable: bool):
+        self.execute(
+            f'UPDATE {tn.user} SET enabled = ? WHERE user_id = ?',
+            args=[int(enable), user_id], query=False,
+        )
 
     # node table
 
