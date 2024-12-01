@@ -92,6 +92,8 @@ class Node(AbstractNode):
     idc: Optional[str]
     upload: int
     download: int
+    traffic_reset_day: int
+    traffic_limit: Optional[int]
     relay_in: List[Relay] = field(default_factory=list)
     relay_out: List[Relay] = field(default_factory=list)
     # a map from scope ("edu" or "default") to target node

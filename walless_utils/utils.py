@@ -16,7 +16,8 @@ USER_COLUMNS = [
 NODE_COLUM_AND_TYPE = [
     ('node_id', int), ('uuid', str), ('deleted', bool), ('hidden', bool), ('name', str), ('weight', float), ('tag', str),
     ('ipv4', str), ('ipv6', str), ('port', int), ('properties', str),
-    ('remarks', str), ('idc', str), ('upload', int), ('download', int)
+    ('remarks', str), ('idc', str), ('upload', int), ('download', int),
+    ('traffic_reset_day', int), ('traffic_limit', int),
 ]
 NODE_COLUMNS, NODE_DTYPES = zip(*NODE_COLUM_AND_TYPE)
 TRAFFIC_COLUMNS = ['ut_id', 'ut_date', 'node_id', 'user_id', 'upload', 'download']
