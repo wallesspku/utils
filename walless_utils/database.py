@@ -138,8 +138,8 @@ END
     
     def enable_user(self, user_id: int, enable: bool):
         self.execute(
-            f'UPDATE {tn.user} SET enabled = ? WHERE user_id = ?',
-            args=[int(enable), user_id], query=False,
+            f'UPDATE {tn.user} SET enabled = ?, last_change = ? WHERE user_id = ?',
+            args=[int(enable), int(time.time()), user_id], query=False,
         )
 
     # node table
