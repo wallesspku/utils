@@ -133,9 +133,10 @@ class Node(AbstractNode):
 def link_relays(nodes: List[Node], relays: List[Relay]):
     uuid2node: Dict[int, Node] = {n.uuid: n for n in nodes}
     for relay in relays:
-        relay.source, relay.target = uuid2node[relay.source_id], uuid2node[relay.target_id]
-        relay.source.relay_out.append(relay)
-        relay.target.relay_in.append(relay)
+        if relay.source_id in uuid2node and relay.target_id in uuid2node:
+            relay.source, relay.target = uuid2node[relay.source_id], uuid2node[relay.target_id]
+            relay.source.relay_out.append(relay)
+            relay.target.relay_in.append(relay)
 
 
 @dataclass
@@ -153,4 +154,5 @@ class Mix:
 def link_mixes(nodes: List[Node], mixes: List[Mix]):
     uuid2nodes = {n.uuid: n for n in nodes}
     for mix in mixes:
-        uuid2nodes[mix.source_uuid].mix[mix.scope] = uuid2nodes[mix.target_uuid]
+        if mix.source_uuid in uuid2nodes and mix.target_uuid in uuid2nodes:
+            uuid2nodes[mix.source_uuid].mix[mix.scope] = uuid2nodes[mix.target_uuid]
