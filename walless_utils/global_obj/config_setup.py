@@ -42,6 +42,7 @@ class ConfigSetup(AbstractSetup):
         if 'WALLESS_CONFIG' in os.environ:
             config_paths.insert(0, os.environ['WALLESS_CONFIG'])
 
+        config_path = None
         for p in config_paths:
             if os.path.exists(p):
                 config_path = p
