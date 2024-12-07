@@ -173,8 +173,9 @@ END
         return None
 
     def get_node_by_uuid(self, uuid: str) -> Node:
+        # this retrieves deleted node as well
         ret = self.execute(
-            f"SELECT {','.join(NODE_COLUMNS)} FROM {tn.node} WHERE uuid=? AND deleted = 0", 
+            f"SELECT {','.join(NODE_COLUMNS)} FROM {tn.node} WHERE uuid=?", 
             query=True, func_to_apply=Node.from_list, args=[uuid]
         )
         if len(ret) == 1:
