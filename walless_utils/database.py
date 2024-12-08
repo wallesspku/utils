@@ -147,7 +147,7 @@ END
     def all_servers(
             self,
             get_relays: bool = True,
-            include_delete: bool = False,
+            include_delete: bool = True,
             get_mix: bool = True
         ) -> List[Node]:
         sql = f"SELECT {' , '.join(NODE_COLUMNS)} FROM {tn.node} WHERE node_id < 10000"
@@ -206,15 +206,15 @@ END
             f'SELECT {",".join(TRAFFIC_COLUMNS)} FROM {tn.traffic} WHERE ut_date > ? AND user_id = ?',
             args=(after, user_id), func_to_apply=Traffic.from_list, query=True,
         )
-    
+
     def get_traffic_on(self, day: datetime.date) -> List[Traffic]:
         return self.execute(
             f'SELECT {",".join(TRAFFIC_COLUMNS)} FROM {tn.traffic} WHERE ut_date = ?',
             args=[day], func_to_apply=Traffic.from_list, query=True,
         )
-    
+
     # probe table
-    
+
     def get_probe_after(self, after: int) -> List[Tuple]:
         return self.execute(
             f'SELECT ip, port, probe_result, ts from {tn.probe} WHERE ts > ?',

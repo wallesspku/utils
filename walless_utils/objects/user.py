@@ -37,13 +37,6 @@ class User:
             ret += ' DISABLED'
         return ret + '>'
 
-    def __eq__(self, other: "User"):
-        return (
-            self.user_id == other.user_id and
-            self.password == other.password and
-            self.uuid == other.uuid
-        )
-
     @classmethod
     def from_list(cls, lst: list) -> "User":
         return User(*lst)
