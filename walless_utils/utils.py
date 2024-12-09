@@ -103,37 +103,3 @@ def url2ip(url):
         return ip
     except:
         return 'error'
-
-
-def last_reset_day(self, day: int) -> date:
-    today = date.today()
-    # Check if the reset day has already passed this month
-    if today.day >= day:
-        last_reset = date(today.year, today.month, day)
-    else:
-        # If not, go to the previous month
-        last_month = today.replace(day=1) - timedelta(days=1)
-        # Handle February and other months with fewer days
-        try:
-            last_reset = last_month.replace(day=day)
-        except ValueError:
-            # If the day is out of range for the month, set to the last day of the month
-            last_reset = last_month
-    return last_reset
-
-
-def next_reset_day(self, day: int) -> date:
-    today = date.today()
-    # Check if the reset day is yet to come this month
-    if today.day < day:
-        next_reset = date(today.year, today.month, day)
-    else:
-        # If the reset day has already passed, go to the next month
-        next_month = (today.replace(day=28) + timedelta(days=4)).replace(day=1)
-        # Handle months with fewer days
-        try:
-            next_reset = next_month.replace(day=day)
-        except ValueError:
-            # If the day is out of range for the month, set to the last day of the month
-            next_reset = next_month.replace(day=1) - timedelta(days=1)
-    return next_reset
