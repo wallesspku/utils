@@ -150,9 +150,9 @@ END
             include_delete: bool = True,
             get_mix: bool = True
         ) -> List[Node]:
-        sql = f"SELECT {' , '.join(NODE_COLUMNS)} FROM {tn.node} WHERE node_id < 10000"
+        sql = f"SELECT {' , '.join(NODE_COLUMNS)} FROM {tn.node} "
         if not include_delete:
-            sql += ' AND deleted = 0'
+            sql += ' WHERE deleted = 0 '
         nodes = self.execute(sql,  query=True, func_to_apply=Node.from_list)
         if get_relays:
             relays = self.execute(f"SELECT {' , '.join(RELAY_COLUMNS)} FROM {tn.relay}", True, Relay.from_list)
