@@ -103,3 +103,7 @@ def url2ip(url):
         return ip
     except:
         return 'error'
+
+
+def today():
+    return datetime.now(tz=tz).date()
