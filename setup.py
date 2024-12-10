@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='walless_utils',
-    version='2.3.2',
+    version='2.3.3',
     packages=['walless_utils', 'walless_utils.objects', 'walless_utils.api', 'walless_utils.global_obj'],
     url='',
     license='',

@@ -105,5 +105,9 @@ def url2ip(url):
         return 'error'
 
 
+def current_time():
+    return datetime.now(tz=tz)
+
+
 def today():
-    return datetime.now(tz=tz).date()
+    return current_time().date()
