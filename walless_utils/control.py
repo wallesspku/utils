@@ -1,16 +1,18 @@
 from typing import *
 import logging
+import os
 
 from .api import Huawei, Cloudflare
-from .global_obj.global_setup import setup_everything, cfg
+from .global_obj.global_setup import setup_everything
 from .global_obj.db_setup import db
+from .global_obj.config_setup import cfg
 
 logger = logging.getLogger('walless')
 
 
 class Controller:
     def __init__(self):
-        setup_everything()
+        setup_everything(log_paths=[os.path.expanduser('~/.var/log/walless_cron.log')])
         self.huawei = Huawei(cfg['huawei'])
         self.cloudflare = Cloudflare(cfg['cloudflare'])
         self.cf_loaded = self.hw_loaded = False
