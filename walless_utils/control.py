@@ -2,26 +2,23 @@ from typing import *
 import logging
 
 from .api import Huawei, Cloudflare
-from .global_obj.config_setup import cfg, URL_TEMPLATE
-from .global_obj.db_setup import db, db_setup
+from .global_obj.global_setup import setup_everything, db, cfg
 
 logger = logging.getLogger('walless')
 
 
 class Controller:
     def __init__(self):
-        db_setup()
+        setup_everything()
         self.huawei = Huawei(cfg['huawei'])
         self.cloudflare = Cloudflare(cfg['cloudflare'])
-        # self.ali = Ali(**cfg['ali'])
-        self.cf_loaded = self.hw_loaded = self.ali_loaded = False
-
-        self.nodes = db.all_servers(get_mix=True)
+        self.cf_loaded = self.hw_loaded = False
+        self.nodes = db.all_servers(get_mix=True, get_relays=True, include_delete=False)
 
     def _load_cf(self):
         if self.cf_loaded:
             return
-        dns, zone_ids = self.cloudflare.load_dns()
+        dns, _ = self.cloudflare.load_dns()
         for node in self.nodes:
             for proto in [4, 6]:
                 if node.real_urls(proto) in dns:
@@ -46,7 +43,7 @@ class Controller:
                 if node.ip(proto) is not None and node.dns[proto].ip != node.ip(proto):
                     logger.warning(f'The IPv{proto} of {node.name} mismatches. Setting its DNS records to {node.ip(proto)}.')
                     self.cloudflare.update_dns(node.real_urls(proto), node.ip(proto))
-    
+
     def sync_mix(self):
         # apply the mix settings on DB to huawei cloud, if mismatched
         # only ipv4 (A record) will be mapped
@@ -62,14 +59,3 @@ class Controller:
                 if scope not in node.dns[4].cname or node.dns[4].cname[scope] != db_cname:
                     logger.warning(f'{scope} CNAME for {node.name} is missing. It should be {db_cname}. Modifying it now.')
                     self.huawei.add_mod_cname(node.urls(4), **{scope+'_cname': db_cname})
-
-    def mix(self, src, tgt, mix_type):
-        for pro in '46':
-            cname = URL_TEMPLATE['real'].replace('#', str(pro)).replace('$', str(tgt))
-            mix_url = URL_TEMPLATE['mix'].replace('#', str(pro)).replace('$', str(src))
-            edu_cname, out_cname = None, None
-            if mix_type in ['all', 'edu']:
-                edu_cname = cname
-            if mix_type in ['all', 'out']:
-                out_cname = cname
-            self.huawei.add_mod_cname(mix_url, edu_cname, out_cname)
