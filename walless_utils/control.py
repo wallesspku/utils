@@ -2,7 +2,8 @@ from typing import *
 import logging
 
 from .api import Huawei, Cloudflare
-from .global_obj.global_setup import setup_everything, db, cfg
+from .global_obj.global_setup import setup_everything, cfg
+from .global_obj.db_setup import db
 
 logger = logging.getLogger('walless')
 
