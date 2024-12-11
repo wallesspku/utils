@@ -1,4 +1,4 @@
-from typing import *
+from typing import Tuple, Optional
 from datetime import datetime, date
 from dataclasses import dataclass
 

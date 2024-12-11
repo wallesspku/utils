@@ -1,11 +1,8 @@
-# Use IPv4 or UUID to determine the identity of the nodes
 import random
 import logging
 
-from .global_obj.global_setup import setup_everything
 from .global_obj.db_setup import db
 from .global_obj.config_setup import cfg
-from .utils import get_ip
 from .network_status import NetworkStatus
 
 logger = logging.getLogger('walless')

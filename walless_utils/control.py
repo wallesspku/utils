@@ -1,4 +1,3 @@
-from typing import *
 import logging
 import os
 

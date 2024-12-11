@@ -1,6 +1,6 @@
-from typing import *
+from typing import List, Optional, Tuple, Dict
 from dataclasses import dataclass, field
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
 
 from ..global_obj.config_setup import URL_TEMPLATE
 
