@@ -18,6 +18,8 @@ class Huawei:
 
     def list_huawei(self):
         from huaweicloudsdkdns.v2 import ListRecordSetsWithLineRequest, DeleteRecordSetsRequest
+        if self.all_records:
+            return self.all_records
         all_records = defaultdict(list)
         for li in self.line_ids:
             list_req = ListRecordSetsWithLineRequest(line_id=li)
@@ -75,3 +77,10 @@ class Huawei:
                         res = self.client.delete_record_sets(req)
                     else:
                         lines.add(rec['line'])
+    
+    def apply_nodes(self, nodes):
+        records = self.list_huawei()
+        for node in nodes:
+            for proto in [4, 6]:
+                if node.urls(proto)+'.' in records:
+                    node.dns[proto].read_huawei_record(records[node.urls(proto)+'.'])
