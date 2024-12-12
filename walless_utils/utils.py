@@ -20,7 +20,9 @@ NODE_COLUM_AND_TYPE = [
     ('traffic_reset_day', int), ('traffic_limit', int),
 ]
 NODE_COLUMNS, NODE_DTYPES = zip(*NODE_COLUM_AND_TYPE)
-TRAFFIC_COLUMNS = ['ut_id', 'ut_date', 'node_id', 'user_id', 'upload', 'download']
+TRAFFIC_COLUMNS = ['ut_date', 'node_id', 'user_id', 'upload', 'download']
+USER_TRAFFIC_COLUMNS = ['ut_date', 'user_id', 'upload', 'download']
+NODE_TRAFFIC_COLUMNS = ['ut_date', 'node_id', 'upload', 'download']
 RELAY_COLUMNS = ['relay_id', 'name', 'tunnel', 'tag', 'properties', 'hidden', 'source_id', 'target_id', 'port']
 SUBLOG_COLUMNS = ['sub_id', 'ts', 'ip', 'remarks', 'proxy_group', 'user_id']
 REGISTRATION_COLUMNS = ['reg_id', 'ts', 'email_header', 'receiver', 'sender', 'status']
@@ -33,6 +35,8 @@ class TableNames:
     user = 'main_user'
     node = 'main_node'
     traffic = 'main_traffic'
+    user_traffic = 'main_usertraffic'
+    node_traffic = 'main_nodetraffic'
     traffic_log = 'main_trafficlog'
     reg = 'main_registration'
     sublog = 'main_sublog'

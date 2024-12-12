@@ -9,6 +9,7 @@ from .objects import User, Node, Traffic, Relay, link_relays, Mix, link_mixes
 from .utils import (
     USER_COLUMNS, NODE_COLUMNS, TRAFFIC_COLUMNS, MIX_COLUMNS,
     RELAY_COLUMNS, tn, SUBLOG_COLUMNS, REGISTRATION_COLUMNS,
+    USER_TRAFFIC_COLUMNS, NODE_TRAFFIC_COLUMNS
 )
 
 logger = logging.getLogger('walless')
@@ -203,14 +204,8 @@ END
 
     def get_traffic_after(self, user_id, after) -> List[Traffic]:
         return self.execute(
-            f'SELECT {",".join(TRAFFIC_COLUMNS)} FROM {tn.traffic} WHERE ut_date > ? AND user_id = ?',
-            args=(after, user_id), func_to_apply=Traffic.from_list, query=True,
-        )
-
-    def get_traffic_on(self, day: datetime.date) -> List[Traffic]:
-        return self.execute(
-            f'SELECT {",".join(TRAFFIC_COLUMNS)} FROM {tn.traffic} WHERE ut_date = ?',
-            args=[day], func_to_apply=Traffic.from_list, query=True,
+            f'SELECT {",".join(USER_TRAFFIC_COLUMNS)} FROM {tn.user_traffic} WHERE ut_date > ? AND user_id = ?',
+            args=(after, user_id), func_to_apply=Traffic.from_list_user, query=True,
         )
 
     # probe table
