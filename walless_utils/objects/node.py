@@ -183,9 +183,6 @@ class Mix:
 
 def link_mixes(nodes: List[Node], mixes: List[Mix]):
     uuid2nodes = {n.uuid: n for n in nodes}
-    temp_mapping = {'edu': "Jiaoyuwang", 'default': "default_view"}
     for mix in mixes:
-        if mix.scope in temp_mapping:
-            mix.scope = temp_mapping[mix.scope]
         if mix.source_uuid in uuid2nodes and mix.target_uuid in uuid2nodes:
             uuid2nodes[mix.source_uuid].mix[mix.scope].append(uuid2nodes[mix.target_uuid])
