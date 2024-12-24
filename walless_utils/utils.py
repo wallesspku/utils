@@ -30,6 +30,7 @@ MIX_COLUMNS = ['source_id', 'target_id', 'scope']
 
 _units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB']
 
+HUAWEI_LINES = ['Jiaoyuwang', 'default_view']
 
 class TableNames:
     user = 'main_user'

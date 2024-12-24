@@ -1,8 +1,10 @@
-from typing import List, Optional, Tuple, Dict
+from typing import List, Optional, Tuple, Dict, Any
 from dataclasses import dataclass, field
 from datetime import date, timedelta
+from collections import defaultdict
 
 from ..global_obj.config_setup import URL_TEMPLATE
+from ..utils import HUAWEI_LINES
 
 
 @dataclass
@@ -65,15 +67,8 @@ class DNSRecord:
     def __init__(self):
         # A/AAAA record on Cloudflare
         self.ip = None
-        # CNAME record on Huawei
-        self.cname: Dict[str, Optional[str]] = {'edu': None, 'out': None}
-
-    def read_huawei_record(self, records):
-        for rec in records:
-            if rec['line'] == 'Jiaoyuwang':
-                self.cname['edu'] = rec['records'][0][:-1]
-            if rec['line'] == 'default_view':
-                self.cname['default'] = rec['records'][0][:-1]
+        # CNAME record on Huawei, line name (e.g. Jiaoyuwang) to api response
+        self.cname: Dict[str, Dict[str, Any]] = dict()
 
 
 @dataclass
@@ -99,7 +94,7 @@ class Node(AbstractNode):
     relay_out: List[Relay] = field(default_factory=list)
     # a map from scope ("edu" or "default") to target node
     # if the scope is missing (default), no mix is applied
-    mix: Dict[str, "Node"] = field(default_factory=dict)
+    mix: Dict[str, List["Node"]] = field(default_factory=lambda: defaultdict(list))
 
     def __post_init__(self):
         super().__post_init__()
@@ -188,6 +183,9 @@ class Mix:
 
 def link_mixes(nodes: List[Node], mixes: List[Mix]):
     uuid2nodes = {n.uuid: n for n in nodes}
+    temp_mapping = {'edu': "Jiaoyuwang", 'default': "default_view"}
     for mix in mixes:
+        if mix.scope in temp_mapping:
+            mix.scope = temp_mapping[mix.scope]
         if mix.source_uuid in uuid2nodes and mix.target_uuid in uuid2nodes:
-            uuid2nodes[mix.source_uuid].mix[mix.scope] = uuid2nodes[mix.target_uuid]
+            uuid2nodes[mix.source_uuid].mix[mix.scope].append(uuid2nodes[mix.target_uuid])

@@ -1,4 +1,7 @@
 from collections import defaultdict
+import logging
+
+logger = logging.getLogger('walless')
 
 
 class Huawei:
@@ -29,58 +32,30 @@ class Huawei:
         self.all_records = dict(all_records)
         return self.all_records
     
-    def add_mod_cname(self, domain, edu_cname=None, default_cname=None):
-        if len(self.all_records) == 0:
-            self.list_huawei()
-        domain = domain+'.'
-        from huaweicloudsdkdns.v2 import UpdateRecordSetRequest, CreateRecordSetWithLineRequest
-        edu_rec = out_rec = None
-        if domain in self.all_records:
-            rec_list = self.all_records[domain]
-            for rec in rec_list:
-                if rec['line'] == 'Jiaoyuwang':
-                    edu_rec = rec
-                if rec['line'] == 'default_view':
-                    out_rec = rec
-
-        for line_id, cname, rec in zip(self.line_ids, [edu_cname, default_cname], [edu_rec, out_rec]):
-            if cname is None:
-                continue
-
-            if rec is not None:
-                if rec['records'][0] == cname:
-                    continue
-                upd_req = UpdateRecordSetRequest(self.hw_cfg['zone_id'], rec['id'], {
-                    'name': domain, 'type': 'CNAME', 'records': [cname+'.']
-                })
-                self.client.update_record_set(upd_req)
-            else:
-                create_req = CreateRecordSetWithLineRequest(self.hw_cfg['zone_id'], {
-                    'name': domain, 'type': 'CNAME', 'records': [cname+'.'], 'line': line_id
-                })
-                self.client.create_record_set_with_line(create_req)
-
-    def clean(self):
-        from huaweicloudsdkdns.v2 import DeleteRecordSetsRequest, DeleteRecordSetRequest
-        if len(self.all_records) == 0:
-            self.list_huawei()
-        for rec_name, recs in self.all_records.items():
-            if '.0.' in rec_name:
-                for rec in recs:
-                    req = DeleteRecordSetsRequest(zone_id=self.hw_cfg['zone_id'], recordset_id=rec['id'])
-                    res = self.client.delete_record_sets(req)
-            if len(recs) > 2:
-                lines = set()
-                for rec in recs:
-                    if rec['line'] in lines:
-                        req = DeleteRecordSetsRequest(zone_id=self.hw_cfg['zone_id'], recordset_id=rec['id'])
-                        res = self.client.delete_record_sets(req)
-                    else:
-                        lines.add(rec['line'])
+    def add_record_set(self, domain, line, records):
+        from huaweicloudsdkdns.v2 import CreateRecordSetWithLineRequest
+        create_req = CreateRecordSetWithLineRequest(self.hw_cfg['zone_id'], {
+            'name': domain, 'type': 'CNAME', 'records': records, 'line': line
+        })
+        res = self.client.create_record_set_with_line(create_req)
+    
+    def delete_record(self, record_id):
+        from huaweicloudsdkdns.v2 import DeleteRecordSetsRequest
+        req = DeleteRecordSetsRequest(zone_id=self.hw_cfg['zone_id'], recordset_id=record_id)
+        res = self.client.delete_record_sets(req)
     
     def apply_nodes(self, nodes):
         records = self.list_huawei()
+        proto = 4
         for node in nodes:
-            for proto in [4, 6]:
-                if node.urls(proto)+'.' in records:
-                    node.dns[proto].read_huawei_record(records[node.urls(proto)+'.'])
+            key = node.urls(proto)+'.'
+            if key in records:
+                for rec in records[key]:
+                    if rec['line'] in node.dns[proto].cname:
+                        logger.error(
+                            "Duplicate DNS CNAME record found for %s in line %s. Deleting it now.", 
+                            key, rec['line']
+                        )
+                        self.delete_record(rec['id'])
+                    else:
+                        node.dns[proto].cname[rec['line']] = rec
