@@ -2,8 +2,8 @@ tabulate
 pyodbc>=5.2.0
 python-dateutil
 requests
-huaweicloudsdkcore==3.1.119
-huaweicloudsdkdns==3.1.119
-cloudflare==3.1.0
+huaweicloudsdkcore==3.1.128
+huaweicloudsdkdns==3.1.128
+cloudflare==3.1.1
 pydantic==2.9.2
 httpx==0.27.2

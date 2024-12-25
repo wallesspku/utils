@@ -1,6 +1,8 @@
 from collections import defaultdict
 import logging
 
+from ..utils import HUAWEI_LINES
+
 logger = logging.getLogger('walless')
 
 
@@ -15,16 +17,14 @@ class Huawei:
             with_credentials(basic_cre). \
             with_endpoint('dns.ap-southeast-1.myhuaweicloud.com'). \
             build()
-        self.line_ids = ['Jiaoyuwang', 'default_view']
-
         self.all_records = dict()
 
     def list_huawei(self):
-        from huaweicloudsdkdns.v2 import ListRecordSetsWithLineRequest, DeleteRecordSetsRequest
+        from huaweicloudsdkdns.v2 import ListRecordSetsWithLineRequest
         if self.all_records:
             return self.all_records
         all_records = defaultdict(list)
-        for li in self.line_ids:
+        for li in HUAWEI_LINES:
             list_req = ListRecordSetsWithLineRequest(line_id=li)
             line_records = self.client.list_record_sets_with_line(list_req).to_dict()
             for rec in line_records['recordsets']:
