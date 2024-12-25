@@ -30,7 +30,7 @@ MIX_COLUMNS = ['source_id', 'target_id', 'scope']
 
 _units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB']
 
-HUAWEI_LINES = ['Jiaoyuwang', 'default_view']
+HUAWEI_LINES = ['Jiaoyuwang', 'default_view', 'Dianxin', 'Yidong', 'Liantong', 'Liantong_Huabei', 'Dianxin_Beijing']
 
 class TableNames:
     user = 'main_user'
