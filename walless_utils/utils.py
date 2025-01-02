@@ -30,7 +30,7 @@ MIX_COLUMNS = ['source_id', 'target_id', 'scope']
 
 _units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB']
 
-HUAWEI_LINES = ['Jiaoyuwang', 'default_view', 'Dianxin', 'Yidong', 'Liantong', 'Liantong_Huabei', 'Dianxin_Beijing']
+HUAWEI_LINES = ['default_view', 'Jiaoyuwang', 'Dianxin', 'Yidong', 'Liantong', 'Liantong_Huabei', 'Dianxin_Beijing']
 
 class TableNames:
     user = 'main_user'
@@ -44,7 +44,7 @@ class TableNames:
     relay = 'main_relay'
     probe = 'main_probe'
     mix = 'main_mix'
-    
+
 tn = TableNames()
 
 
