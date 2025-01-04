@@ -1,7 +1,13 @@
 import os
 from typing import Optional, Dict, Any
 import logging
-import tomllib
+try:
+    import tomllib
+except ImportError:
+    try:
+        import toml as tomllib
+    except ImportError:
+        pass
 
 from .abs_setup import AbstractSetup
 
@@ -18,7 +24,7 @@ class ConfigSetup(AbstractSetup):
         super().__init__()
         self.name = 'config'
         self.log_level = 1
-    
+
     def setup(self):
         cfg.update(self.load_config())
         URL_TEMPLATE.update(cfg.get('url_template', {}))
