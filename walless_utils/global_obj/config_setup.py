@@ -1,13 +1,7 @@
 import os
 from typing import Optional, Dict, Any
 import logging
-try:
-    import tomllib
-except ImportError:
-    try:
-        import toml as tomllib
-    except ImportError:
-        pass
+from pathlib import Path
 
 from .abs_setup import AbstractSetup
 
@@ -17,6 +11,18 @@ URL_TEMPLATE = dict()
 BALANCE_CONFIG = dict()
 cfg = dict()
 logger = logging.getLogger('walless')
+
+
+def load_toml(file_path: str):
+    try:
+        # for python 3.11
+        import tomllib
+        with open(file_path, 'rb') as fp:
+            return tomllib.load(fp)
+    except ImportError:
+        # for older versions; need `pip3 install toml`
+        import toml
+        return toml.load(file_path)
 
 
 class ConfigSetup(AbstractSetup):
@@ -39,18 +45,17 @@ class ConfigSetup(AbstractSetup):
 
     def load_config(self) -> Optional[Dict[str, Any]]:
         config_paths = [
-            './walless.config.d',
-            os.path.expanduser('~/.config/walless.config.d'),
-            '/etc/walless.config.d',
+            Path('~/walless.config.d').expanduser(),
+            Path('/etc/walless.config.d'),
         ]
         if 'WALLESS_ROOT' in os.environ:
-            config_paths.insert(0, os.path.join(os.environ.get('WALLESS_ROOT'), 'walless.config.d'))
+            config_paths.insert(0, Path(os.environ.get('WALLESS_ROOT'))/'walless.config.d')
         if 'WALLESS_CONFIG' in os.environ:
-            config_paths.insert(0, os.environ['WALLESS_CONFIG'])
+            config_paths.insert(0, Path(os.environ['WALLESS_CONFIG']))
 
-        config_path = None
+        config_path: Path = None
         for p in config_paths:
-            if os.path.exists(p):
+            if p.exists():
                 config_path = p
                 logger.info(f'Config found at {config_path}.')
                 break
@@ -58,9 +63,8 @@ class ConfigSetup(AbstractSetup):
             raise ValueError("Config is not found in the following paths: %s" % '\n'.join(config_paths))
 
         ret = dict()
-        for jp in reversed(list(filter(lambda x: x.endswith('.toml'), sorted(os.listdir(config_path))))):
-            with open(os.path.join(config_path, jp), 'rb') as fp:
-                ret.update(tomllib.load(fp))
+        for fp in reversed(list(filter(lambda x: x.suffix == '.toml', sorted(list(config_path.iterdir()))))):
+            ret.update(load_toml(os.path.join(config_path, fp)))
 
         return ret
 
