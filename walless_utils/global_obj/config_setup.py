@@ -1,7 +1,7 @@
 import os
 from typing import Optional, Dict, Any
 import logging
-import yaml
+import tomllib
 
 from .abs_setup import AbstractSetup
 
@@ -38,7 +38,7 @@ class ConfigSetup(AbstractSetup):
             '/etc/walless.config.d',
         ]
         if 'WALLESS_ROOT' in os.environ:
-            config_paths.insert(0, os.path.join(os.environ.get('WALLESS_ROOT'), '.config', 'walless.config.d'))
+            config_paths.insert(0, os.path.join(os.environ.get('WALLESS_ROOT'), 'walless.config.d'))
         if 'WALLESS_CONFIG' in os.environ:
             config_paths.insert(0, os.environ['WALLESS_CONFIG'])
 
@@ -51,14 +51,11 @@ class ConfigSetup(AbstractSetup):
         if config_path is None:
             raise ValueError("Config is not found in the following paths: %s" % '\n'.join(config_paths))
 
-        configs = []
-        for jp in reversed(list(filter(lambda x: x.endswith('.yaml'), sorted(os.listdir(config_path))))):
-            with open(os.path.join(config_path, jp)) as fp:
-                configs.append(yaml.safe_load(fp))
-
         ret = dict()
-        for config in configs:
-            ret.update(config)
+        for jp in reversed(list(filter(lambda x: x.endswith('.toml'), sorted(os.listdir(config_path))))):
+            with open(os.path.join(config_path, jp), 'rb') as fp:
+                ret.update(tomllib.load(fp))
+
         return ret
 
 
