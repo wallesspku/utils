@@ -12,11 +12,11 @@ class AbstractSetup:
         self._setup_done = False
         self.name = 'abstract'
         self.log_level = logging.WARNING
-    
+
     @property
     def setup_done(self):
         return self._setup_done
-    
+
     def __call__(self, **kwargs):
         if self._setup_done:
             return
@@ -28,6 +28,6 @@ class AbstractSetup:
             self.setup(**kwargs)
             logger.log(self.log_level, f'{self.name} setup finished in {time.time()-since:.2f}s.')
             self._setup_done = True
-    
+
     def setup(self):
         raise NotImplementedError

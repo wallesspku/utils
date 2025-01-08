@@ -14,8 +14,8 @@ class EverythingSetup(AbstractSetup):
     def __init__(self):
         super().__init__()
         self.name = 'everything'
-        self.log_level = logging.WARNING
-    
+        self.log_level = logging.INFO
+
     def setup(
         self, log_paths=None, user_pool_kwargs=None, node_pool_kwargs=None,
         pull_node=False, pull_user=False, add_notifier=False,
