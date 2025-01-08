@@ -11,7 +11,7 @@ class AbstractSetup:
         self._lock = Lock()
         self._setup_done = False
         self.name = 'abstract'
-        self.log_level = logging.WARNING
+        self.log_level = logging.INFO
 
     @property
     def setup_done(self):
