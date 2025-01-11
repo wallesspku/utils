@@ -25,7 +25,7 @@ class DBCommunicator:
     upload_log_sql = f'INSERT INTO {tn.traffic_log} (user_id, node_id, upload, download, ts) VALUES (?, ?, ?, ?, ?)'
     insert_probe_sql = f'INSERT INTO {tn.probe} (ip, port, probe_result, ts) VALUES (?, ?, ?, ?)'
     insert_or_update_traffic_sql = f"""
-IF EXISTS (SELECT 1 FROM {tn.traffic} WHERE ut_date=? AND user_id=? AND node_id=?) 
+IF EXISTS (SELECT 1 FROM {tn.traffic} WHERE ut_date=? AND user_id=? AND node_id=?)
 BEGIN
     UPDATE {tn.traffic} SET upload=upload+?, download=download+? WHERE ut_date=? AND user_id=? AND node_id=?
 END
@@ -35,7 +35,7 @@ BEGIN
 END
 """ # need 3 + 5 + 5 = 13 args
 
-    # used for backup script 
+    # used for backup script
     backup_user_sql = f'SELECT {",".join(USER_COLUMNS)} FROM {tn.user}'
     backup_node_sql = f'SELECT {",".join(NODE_COLUMNS)} FROM {tn.node}'
     backup_traffic_sql = f'SELECT {",".join(TRAFFIC_COLUMNS)} FROM {tn.traffic} WHERE ut_date = ?'
@@ -109,7 +109,7 @@ END
         if enable_only:
             sql += ' AND enabled != 0'
         return self.execute(sql, query=True, func_to_apply=User.from_list)
-    
+
     def get_one_user_by_email(self, email: str) -> Optional[User]:
         ret = self.execute(
             f"SELECT {','.join(USER_COLUMNS)} FROM {tn.user} WHERE email=?",
@@ -136,7 +136,7 @@ END
             args=[    int(time.time()), email_header, sender, receiver, status],
             query=False,
         )
-    
+
     def enable_user(self, user_id: int, enable: bool):
         self.execute(
             f'UPDATE {tn.user} SET enabled = ?, last_change = ? WHERE user_id = ?',
@@ -149,12 +149,18 @@ END
             self,
             get_relays: bool = True,
             include_delete: bool = True,
-            get_mix: bool = True
+            get_mix: bool = True,
+            exclude_tail: bool = True,
         ) -> List[Node]:
         sql = f"SELECT {' , '.join(NODE_COLUMNS)} FROM {tn.node} "
+        conditions = []
         if not include_delete:
-            sql += ' WHERE deleted = 0 '
-        nodes = self.execute(sql,  query=True, func_to_apply=Node.from_list)
+            conditions += ['deleted = 0']
+        if exclude_tail:
+            conditions += ['node_id < 10000']
+        if conditions:
+            sql += ' WHERE ' + ' AND '.join(conditions)
+        nodes = self.execute(sql, query=True, func_to_apply=Node.from_list)
         if get_relays:
             relays = self.execute(f"SELECT {' , '.join(RELAY_COLUMNS)} FROM {tn.relay}", True, Relay.from_list)
             link_relays(nodes, relays)
@@ -166,7 +172,7 @@ END
 
     def get_node_by_ip(self, ipv4: str) -> Node:
         ret = self.execute(
-            f"SELECT * FROM {tn.node} WHERE ipv4=? AND deleted = 0", 
+            f"SELECT * FROM {tn.node} WHERE ipv4=? AND deleted = 0",
             query=True, func_to_apply=Node.from_list, args=[ipv4]
         )
         if len(ret) == 1:
@@ -176,7 +182,7 @@ END
     def get_node_by_uuid(self, uuid: str) -> Node:
         # this retrieves deleted node as well
         ret = self.execute(
-            f"SELECT {','.join(NODE_COLUMNS)} FROM {tn.node} WHERE uuid=?", 
+            f"SELECT {','.join(NODE_COLUMNS)} FROM {tn.node} WHERE uuid=?",
             query=True, func_to_apply=Node.from_list, args=[uuid]
         )
         if len(ret) == 1:
