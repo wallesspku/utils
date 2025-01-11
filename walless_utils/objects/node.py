@@ -28,7 +28,7 @@ class AbstractNode:
         if not set(self.tag).issubset(user_tag):
             return False
         return True
-    
+
 
 @dataclass
 class Relay(AbstractNode):
@@ -53,11 +53,11 @@ class Relay(AbstractNode):
     def port_range(self):
         start = self.port - self.port % 100
         return start, start + 100
-    
+
     @property
     def ipv4(self):
         return self.source.ipv4
-    
+
     @property
     def ipv6(self):
         return self.source.ipv6
@@ -68,7 +68,7 @@ class DNSRecord:
         # A/AAAA record on Cloudflare
         self.ip = None
         # CNAME record on Huawei, line name (e.g. Jiaoyuwang) to api response
-        self.cname: Dict[str, Dict[str, Any]] = dict()
+        self.cname: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
 
 
 @dataclass
@@ -121,7 +121,7 @@ class Node(AbstractNode):
     @staticmethod
     def port_range():
         return 4400, 4500
-    
+
     def __hash__(self):
         return hash(self.uuid)
 
@@ -175,7 +175,7 @@ class Mix:
     target_uuid: str
     # scope can either be "default" or "edu"
     scope: str
-    
+
     @classmethod
     def from_list(cls, li):
         return cls(*li)
@@ -186,3 +186,8 @@ def link_mixes(nodes: List[Node], mixes: List[Mix]):
     for mix in mixes:
         if mix.source_uuid in uuid2nodes and mix.target_uuid in uuid2nodes:
             uuid2nodes[mix.source_uuid].mix[mix.scope].append(uuid2nodes[mix.target_uuid])
+
+    # if 'default_view' is missing, set it to the node itself
+    for node in nodes:
+        if 'default_view' not in node.mix:
+            node.mix['default_view'] = [node]
