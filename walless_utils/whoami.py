@@ -8,7 +8,6 @@ from .network_status import NetworkStatus
 logger = logging.getLogger('walless')
 
 
-
 def whoami(ns: NetworkStatus = None, debug: bool = False):
     # if debug is True, will randomly pick up a node
     my_uuid = cfg.get('uuid')
@@ -25,7 +24,7 @@ def whoami(ns: NetworkStatus = None, debug: bool = False):
         for node in nodes:
             if node.uuid == my_uuid:
                 return node
-    
+
     # ipv4 is priority 2
     for node in nodes:
         if node.ip(4) is not None and node.ip(4) == ns.ipv4:

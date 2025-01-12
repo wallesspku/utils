@@ -4,6 +4,7 @@ from .config_setup import cfg, config_setup
 
 db: DBCommunicator = DBCommunicator({})
 
+
 class DBSetup(AbstractSetup):
     def __init__(self):
         super().__init__()

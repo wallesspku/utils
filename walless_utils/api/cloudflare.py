@@ -47,7 +47,7 @@ class Cloudflare:
         else:
             r = self.cf.dns.records.create(**kwargs)
         self.dns[domain] = r
-    
+
     def apply_nodes(self, nodes):
         # pull DNS records and apply them to nodes by modifying their `dns` field
         self.load_dns()
