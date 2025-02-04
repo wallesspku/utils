@@ -24,7 +24,7 @@ def whoami(ns: NetworkStatus = None, debug: bool = False):
         ns.wait_for_network()
 
     retries = 20
-    while ns.ipv4 is None and retries > 0:
+    while retries > 0:
         try:
             nodes = db.all_servers(get_mix=False, get_relays=True)
             break
