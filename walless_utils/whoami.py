@@ -1,3 +1,4 @@
+from typing import Optional
 import random
 import time
 import logging
@@ -9,7 +10,7 @@ from .network_status import NetworkStatus
 logger = logging.getLogger('walless')
 
 
-def whoami(ns: NetworkStatus = None, debug: bool = False):
+def whoami(ns: Optional[NetworkStatus] = None, debug: bool = False):
     """
     Identify the current. It will try to identify the current node by the following order:
     1. If the UUID is configured, it will return the node with the UUID.
