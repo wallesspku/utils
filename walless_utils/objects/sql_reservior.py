@@ -33,6 +33,8 @@ class EditReservior:
         self.disabled = disabled
     
     def _commit(self, args: List[Tuple[Any, ...]]):
+        if len(args) == 0:
+            return
         if self.commit_lock.locked() and not self.block:
             logger.warning(
                 f'Last commit of "{self.sql}" is not done yet. '
