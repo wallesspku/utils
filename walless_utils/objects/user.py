@@ -10,6 +10,7 @@ from ..global_obj.config_setup import DOMAINS, BALANCE_CONFIG
 class User:
     user_id: int
     enabled: bool
+    blocked: bool
     username: str
     password: str
     email: str
@@ -25,16 +26,22 @@ class User:
 
     def __post_init__(self):
         self.enabled = (self.enabled != 0)
+        self.blocked = (self.blocked != 0)
         if isinstance(self.register_day, int):
             self.register_day = datetime.fromtimestamp(self.register_day, tz=tz).date()
         if isinstance(self.last_active_day, int):
             self.last_active_day = datetime.fromtimestamp(self.last_active_day, tz=tz).date()
         self.tag = tuple(self.tag.split(':')) if self.tag else tuple()
 
+    @property
+    def valid(self):
+        # is enabled and not blocked
+        return self.enabled and not self.blocked
+
     def __repr__(self) -> str:
         ret = f'<User {self.user_id}: {self.email}'
-        if not self.enabled:
-            ret += ' DISABLED'
+        if not self.valid:
+            ret += ' INVALID'
         return ret + '>'
 
     @classmethod

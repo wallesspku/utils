@@ -10,7 +10,7 @@ tz = ZoneInfo('Asia/Shanghai')
 
 
 USER_COLUMNS = [
-    'user_id', 'enabled', 'username', 'password', 'email', 'tag', 'reg_time', 'last_activity', 'upload', 'download',
+    'user_id', 'enabled', 'blocked', 'username', 'password', 'email', 'tag', 'reg_time', 'last_activity', 'upload', 'download',
     'balance', 'uuid', 'last_change', 'remarks'
 ]
 NODE_COLUM_AND_TYPE = [

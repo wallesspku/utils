@@ -1,0 +1,23 @@
+[build-system]
+requires      = ["setuptools>=61", "wheel"]      # what’s needed to build
+build-backend = "setuptools.build_meta"
+
+# ---- PEP 621 core metadata -----------------------------------------------
+[project]
+name        = "walless_utils"
+version     = "2.4.12"
+description = "walless utils"
+authors     = [{ name = "hiaoxui", email = "wallesspku@gmail.com" }]
+license     = { text = "" }          # or SPDX-style:  license = { text = "MIT" }
+
+# ---- Setuptools-specific extras ------------------------------------------
+[tool.setuptools]               # only needed for options *not* in PEP 621
+packages = [
+  "walless_utils",
+  "walless_utils.objects",
+  "walless_utils.api",
+  "walless_utils.global_obj",
+]
+
+# If you had console-script entry points, dependencies, extras, etc.,
+# they would go here as additional [project.*] subtables.

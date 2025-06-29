@@ -45,6 +45,7 @@ class ConfigSetup(AbstractSetup):
 
     def load_config(self) -> Optional[Dict[str, Any]]:
         config_paths = [
+            Path('./walless.config.d').absolute(),
             Path('~/walless.config.d').expanduser(),
             Path('/etc/walless.config.d'),
         ]
@@ -60,7 +61,10 @@ class ConfigSetup(AbstractSetup):
                 logger.info(f'Config found at {config_path}.')
                 break
         if config_path is None:
-            raise ValueError("Config is not found in the following paths: %s" % '\n'.join(config_paths))
+            raise ValueError(
+                "Config is not found in the following paths: %s"
+                % '\n'.join(map(str, config_paths))
+            )
 
         ret = dict()
         for fp in reversed(list(filter(lambda x: x.suffix == '.toml', sorted(list(config_path.iterdir()))))):
