@@ -1,6 +1,5 @@
 import time
 from typing import List, Optional, Tuple
-import datetime
 import logging
 
 import pyodbc
@@ -45,6 +44,7 @@ END
     delete_sublog_sql = f'DELETE FROM {tn.sublog} WHERE ts < ?'
     delete_traffic_sql = f'DELETE FROM {tn.traffic} WHERE ut_date < ?'
     delete_registration_sql = f'DELETE FROM {tn.reg} WHERE ts < ?'
+    add_abuse_sql = f"INSERT INTO {tn.abuse_event} (user, node, reason) VALUES (?, ?, ?, ?)"
 
     def __init__(self, conn_cfgs):
         self.conn_cfgs = conn_cfgs
@@ -220,4 +220,13 @@ END
         return self.execute(
             f'SELECT ip, port, probe_result, ts from {tn.probe} WHERE ts > ?',
             args=[after], query=True,
+        )
+
+    # abuse event
+
+    def report_abuse_event(self, node_id: str, user_id: int, reason: str):
+        self.execute(
+            sql=self.add_abuse_sql,
+            args=[user_id, node_id, reason],
+            query=False,
         )

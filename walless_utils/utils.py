@@ -44,6 +44,7 @@ class TableNames:
     relay = 'main_relay'
     probe = 'main_probe'
     mix = 'main_mix'
+    abuse_event = 'main_abuseevent'
 
 tn = TableNames()
 
